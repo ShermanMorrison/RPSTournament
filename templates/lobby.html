@@ -1,4 +1,26 @@
 {% extends "template.html" %}
 {% block content %}
     <h2>Lobby</h2>
+
+    <form class="viewLeaderBoard">
+        <input type="submit" value="View Leaderboard">
+    </form>
+    <form class="viewCurrentGames">
+        <input type="submit" value="View Current Games">
+    </form>
+
+    <ul id="userNav">
+        <li><a href="#">John G.</a>
+            <ul>
+                <li><a href="#">Challenge</a></li>
+                <li><a href="#">History</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Jill P.</a>
+            <ul>
+                <li><a href="#">Challenge</a></li>
+                <li><a href="#">History</a></li>
+            </ul>
+        </li>
+    </ul>
 {% endblock %}
