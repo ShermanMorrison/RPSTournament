@@ -1,0 +1,8 @@
+{% extends "template.html" %}
+{% block content %}
+    <form action="" method="post">
+        <input name="username" type="username" value="{{request.form.password}}">
+        <input name="password" type="password" value="{{request.form.password}}">
+        <input type="submit" value="Sign In">
+    </form>
+{% endblock %}
