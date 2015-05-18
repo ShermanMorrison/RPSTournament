@@ -1,4 +1,12 @@
 {% extends "template.html" %}
 {% block content %}
     <h2>Game</h2>
+    <button type="button" onclick="rock()">Rock</button>
+    <button type="button" onclick="paper()">Paper</button>
+    <button type="button" onclick="scissors()">Scissors</button>
+
+    <img src="/static/img/rock.png" id="rockImg" style="display:none;width:128px;height:128px">
+    <img src="/static/img/paper.png" id="paperImg" style="display:none;width:128px;height:128px">
+    <img src="/static/img/scissors.png" id="scissorsImg" style="display:none;width:128px;height:128px">
+    <canvas class= "canvas" id="canvas" style="position:relative"></canvas>
 {% endblock %}

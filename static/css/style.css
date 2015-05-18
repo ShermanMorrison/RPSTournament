@@ -54,7 +54,7 @@ html{
     display: block;
     height: 30px;
     padding: 6px 5px 0 5px;
-    color: #090;
+    color: #930;
     text-align: left;
 }
 
@@ -65,7 +65,7 @@ html{
 
 #userNav a:hover {
     text-decoration: none;
-    background-color: #444;
+    background-color: #111;
 }
 
 

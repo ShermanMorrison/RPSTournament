@@ -28,3 +28,7 @@ def login():
 def lobby():
     print "in lobby"
     return render_template('lobby.html')
+
+@application.route('/game')
+def game():
+    return render_template('game.html')
