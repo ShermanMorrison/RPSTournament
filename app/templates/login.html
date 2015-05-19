@@ -1,8 +1,12 @@
 {% extends "template.html" %}
 {% block content %}
-    <form action="" method="post">
+    <form class="joinGame" action="" method="post">
         <input name="username" type="username" value="{{request.form.password}}">
         <input name="password" type="password" value="{{request.form.password}}">
         <input type="submit" value="Sign In">
     </form>
+    <button type="button" id="joinGame">Sign In</button>
+
+    <!--<script type="text/javascript" charset="utf-8" src="static/js/script.js"></script>-->
+
 {% endblock %}
