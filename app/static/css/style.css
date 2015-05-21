@@ -40,7 +40,7 @@ html{
     padding: 0;
     margin-left: 100px;
     margin-top: -30px;
-    float:left
+    float:left;
     list-style: none;
 }
 #userNav ul li {

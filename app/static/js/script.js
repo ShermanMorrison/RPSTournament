@@ -6,29 +6,33 @@ $(document).ready(function(){
         console.log('Server says I connected!');
 //        socket.emit('joined', {});
     });
-    debugger;
+
+
+    (function(){
+            var bindUI = function(){
+                //menu hover
+                $('#userNav li').hover(
+                    function() {
+                        $('ul', this).slideDown("fast");
+                    },
+                    function() {
+                        $('ul', this).slideUp("fast");
+                    }
+                );
+            };
+
+
+
+            var ready = function(){
+                console.log("Ready to run JS!");
+                bindUI();
+
+            }
+
+            ready();
+    })();
+
 });
-
-(function(){
-        var bindUI = function(){
-            //menu hover
-            $('#userNav li').hover(
-                function() {
-                    $('ul', this).slideDown("fast");
-                },
-                function() {
-                    $('ul', this).slideUp("fast");
-                }
-            );
-        };
-
-        var ready = function(){
-            console.log("Ready to run JS!");
-            bindUI();
-        }
-
-        ready();
-})();
 
 var images = ["#rockImg","#paperImg","#scissorsImg"];
 

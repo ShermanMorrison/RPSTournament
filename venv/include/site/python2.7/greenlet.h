@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#define GREENLET_VERSION "0.4.7"
+#define GREENLET_VERSION "0.4.2"
 
 typedef struct _greenlet {
 	PyObject_HEAD
@@ -114,7 +114,7 @@ static void **_PyGreenlet_API = NULL;
  * g.parent = new_parent
  */
 #define PyGreenlet_SetParent \
-	(* (int (*)(PyGreenlet *greenlet, PyGreenlet *nparent)) \
+	(* (PyObject * (*)(PyGreenlet *greenlet, PyGreenlet *nparent)) \
 	 _PyGreenlet_API[PyGreenlet_SetParent_NUM])
 
 /* Macro that imports greenlet and initializes C API */

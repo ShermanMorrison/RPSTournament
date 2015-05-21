@@ -3,14 +3,30 @@
     <h2>Game</h2>
     <button type="button" onclick="rock()">Rock</button>
     <button type="button" onclick="paper()">Paper</button>
+
     <button type="button" onclick="scissors()">Scissors</button>
     <br>
-    <form class="submitMove">
-        <input type="submit" value="Submit">
-    </form>
+    <button type="button" onclick="submit()">Submit</button>
 
+    <span style="display:none" id="display_submit">
+        Please select a move before submitting!
+    </span>
+    <br>
+    <br>
+    Your move:
+    <br>
+    <br>
     <img src="/static/img/rock.png" id="rockImg" style="display:none;width:128px;height:128px">
     <img src="/static/img/paper.png" id="paperImg" style="display:none;width:128px;height:128px">
     <img src="/static/img/scissors.png" id="scissorsImg" style="display:none;width:128px;height:128px">
+    <br>
+    Opponent's move:
+    <br>
+    <img src="/static/img/rock.png" id="rockImgOpp" style="display:none;width:128px;height:128px">
+    <img src="/static/img/paper.png" id="paperImgOpp" style="display:none;width:128px;height:128px">
+    <img src="/static/img/scissors.png" id="scissorsImgOpp" style="display:none;width:128px;height:128px">
+
     <canvas class= "canvas" id="canvas" style="position:relative"></canvas>
+
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/game.js')}}"></script>
 {% endblock %}
