@@ -4,6 +4,7 @@ from flask import render_template, request, redirect, url_for, session
 from . import server
 from .. import socketio
 
+users = []
 #routing
 @server.route('/', methods=['GET', 'POST'])
 def login():
@@ -11,7 +12,9 @@ def login():
         print "Got log in request from " + request.form['username']
         print "with password " + request.form['password']
         session['name'] = request.form['username']
-        return redirect(url_for('.lobby'))
+        if session['name'] not in users:
+            users.append(session['name'])
+        return render_template('lobby.html', name=session['name'], users=users) #redirect(url_for('.lobby'))
     else:
         return render_template('login.html')
 
@@ -21,7 +24,7 @@ def lobby():
     socketio.emit('status', {'msg': 'you have entered the room'}, broadcast=True)
     print "in lobby"
     name = session['name']
-    return render_template('lobby.html', name=name)
+    return render_template('lobby.html', name=name, users=users)
 
 
 @server.route('/game', methods=['GET', 'POST'])

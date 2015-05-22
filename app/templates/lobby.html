@@ -1,6 +1,7 @@
 {% extends "template.html" %}
 {% block content %}
     {{name}}
+
     <h2>Lobby</h2>
 
     <form class="viewLeaderBoard">
@@ -11,18 +12,16 @@
     </form>
 
     <ul id="userNav">
-        <li><a href="#">John G.</a>
-            <ul>
-                <li><a href="/game">Challenge</a></li>
-                <li><a href="#">History</a></li>
-            </ul>
-        </li>
-        <li><a href="#">Jill P.</a>
-            <ul>
-                <li><a href="/game">Challenge</a></li>
-                <li><a href="#">History</a></li>
-            </ul>
-        </li>
+    {% for user in users %}
+        {% if user != name %}
+            <li><a href="#">{{user}}</a>
+                <ul>
+                    <li><a href="/game">Challenge</a></li>
+                    <li><a href="#">History</a></li>
+                </ul>
+            </li>
+        {% endif %}
+    {% endfor %}
     </ul>
 
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/lobby.js')}}"></script>
