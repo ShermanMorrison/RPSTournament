@@ -10,12 +10,23 @@ users = []
 @server.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        # pop old username for this client
+        if 'name' in session:
+            try:
+                users.remove(session['name'])
+            except ValueError:
+                pass
+        session.pop('name', None)
+
+        # make new username for this client
         session['name'] = request.form['username']
         if session['name'] not in users:
             users.append(session['name'])
+
         return redirect(url_for('.lobby'))
     else:
         return render_template('login.html')
+
 
 def login_required(test):
     @wraps(test)
@@ -33,10 +44,7 @@ def login_required(test):
 def lobby():
     socketio.emit('status', {'msg': 'you have entered the room'}, broadcast=True)
     print "in lobby"
-    if 'name' in session:
-        name = session['name']
-    else:
-        name = None
+    name = session['name']
     return render_template('lobby.html', name=name, users=users)
 
 
@@ -53,8 +61,19 @@ def game():
     name = session['name']
     return render_template('game.html', name=name)
 
-@socketio.on('text', namespace='/game')
-def joined(message):
-    """Sent by clients when they enter a room.
-    A status message is broadcast to all people in the room."""
-    socketio.emit('submittedMove', {'msg': 0}, namespace='/game', broadcast=True)
+@socketio.on('connect', namespace='/game')
+def connect():
+    # try:
+    #     users.append(session['name'])
+    # except ValueError:
+    #     pass
+    pass
+
+@socketio.on('disconnect', namespace='/game')
+def disconnect():
+    # pass
+    if 'name' in session:
+        try:
+            users.remove(session['name'])
+        except ValueError:
+            pass
