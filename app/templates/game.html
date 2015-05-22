@@ -1,5 +1,11 @@
 {% extends "template.html" %}
 {% block content %}
+    {{name}}
+    <script type="text/javascript" charset="utf-8">
+        var name = "{{name}}";
+    </script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/game.js')}}"></script>
+
     <h2>Game</h2>
     <button type="button" onclick="rock()">Rock</button>
     <button type="button" onclick="paper()">Paper</button>
@@ -28,5 +34,5 @@
 
     <canvas class= "canvas" id="canvas" style="position:relative"></canvas>
 
-    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/game.js')}}"></script>
+
 {% endblock %}

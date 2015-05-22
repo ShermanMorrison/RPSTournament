@@ -1,14 +1,10 @@
-var images, hideOthers, rock, paper, scissors, submit;
+var images, hideOthers, changeMove, rock, paper, scissors, submit;
 var move = -1;
 
 $(document).ready(function(){
     images = ["#rockImg","#paperImg","#scissorsImg"];
 
     hideOthers= function(index){
-        if (move == index)
-            move = -1;
-        else
-            move = index;
         for (i in images) {
             if (i != index){
                 $(images[i]).hide();
@@ -17,10 +13,6 @@ $(document).ready(function(){
     }
 
     hideOthersOpp = function(index){
-        if (move == index)
-            move = -1;
-        else
-            move = index;
         for (i in images) {
             if (i != index){
                 $(images[i] + "Opp").hide();
@@ -28,29 +20,27 @@ $(document).ready(function(){
         }
     }
 
+
     rock = function(){
-        hideOthers(0);
-        $("#rockImg").toggle();
+        move = 0;
     };
 
     paper = function(){
-        hideOthers(1);
-        $("#paperImg").toggle();
+        move = 1;
     };
 
     scissors = function(){
-        hideOthers(2);
-        $("#scissorsImg").toggle();
-
+        move = 2;
     };
 
     submit = function(){
         if (move >= 0 && move < 3){
-            $.post("/game", {data: move});
+            hideOthers(move);
+            $(images[move]).toggle();
+            $.post("/game", {data: move, sender: name});
             console.log("Sent post to submit move");
         }
         else{
-
             $('#display_submit').fadeIn(10);
             $('#display_submit').fadeOut(1000);
         }
@@ -61,9 +51,10 @@ $(document).ready(function(){
     // socket handlers
     socket.on('submittedMove', function(data) {
         console.log('Got a submittedMove message: ' + data.msg );
-        if (data.msg){
+        if (data.msg && data.sender != name){
             hideOthersOpp(images[data.msg]);
+            $(images[data.msg] + "Opp").toggle();
         }
-         $(images[data.msg] + "Opp").toggle();
+
     });
 });
