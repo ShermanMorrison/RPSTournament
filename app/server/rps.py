@@ -60,6 +60,8 @@ def game():
 def connect():
     global users
     try:
+        if 'name' in session:
+            session.pop('name')
         users.append(session['name'])
         socketio.emit('joined', {'sender': session['name']}, namespace='/game')
     except ValueError:
