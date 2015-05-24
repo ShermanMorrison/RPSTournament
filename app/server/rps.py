@@ -6,7 +6,7 @@ from .. import socketio
 from functools import wraps
 from uuid import uuid4
 
-users = {}
+users = []
 #routing
 @server.route('/', methods=['GET', 'POST'])
 def login():
@@ -67,11 +67,11 @@ def connect():
         #     users.remove(session['name'])
         # except ValueError:
         #     pass
-        # users.append(session['name'])
-        if session['uuid'] not in users:
-            users[session['uuid']] = [session['name']]
-        else:
-            users[session['uuid']].append(session['name'])
+        users.append(session['name'])
+        # if session['uuid'] not in users:
+        #     users[session['uuid']] = [session['name']]
+        # else:
+        #     users[session['uuid']].append(session['name'])
         socketio.emit('joined', {'sender': session['name']}, namespace='/game')
     except ValueError:
         pass
@@ -83,7 +83,8 @@ def disconnect():
     if 'name' in session:
         # emit leave message to all clients
         try:
-            users[session['uuid']].pop(0)
+            users.remove(session['name'])
+            # users[session['uuid']].pop(0)
             socketio.emit('left', {'sender': session['name']}, namespace='/game')
         except ValueError:
             pass
