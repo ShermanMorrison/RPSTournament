@@ -4,8 +4,9 @@ from flask import render_template, request, redirect, url_for, session, flash
 from . import server
 from .. import socketio
 from functools import wraps
+from uuid import uuid4
 
-users = []
+users = {}
 #routing
 @server.route('/', methods=['GET', 'POST'])
 def login():
@@ -15,7 +16,9 @@ def login():
 
         # make new username for this client
         session['name'] = request.form['username']
-        # users.append(session['name'])
+
+        #make uuid for session
+        session['uuid'] = str(uuid4())
 
         return redirect(url_for('.lobby'))
     else:
@@ -60,9 +63,15 @@ def game():
 def connect():
     global users
     try:
-        if 'name' in session:
-            session.pop('name')
-        users.append(session['name'])
+        # try:
+        #     users.remove(session['name'])
+        # except ValueError:
+        #     pass
+        # users.append(session['name'])
+        if session['uuid'] not in users:
+            users[session['uuid']] = [session['name']]
+        else:
+            users[session['uuid']].append(session['name'])
         socketio.emit('joined', {'sender': session['name']}, namespace='/game')
     except ValueError:
         pass
@@ -73,8 +82,11 @@ def disconnect():
     global users
     if 'name' in session:
         # emit leave message to all clients
-        if session['name'] in users:
-            users.remove(session['name'])
+        try:
+            users[session['uuid']].pop(0)
             socketio.emit('left', {'sender': session['name']}, namespace='/game')
+        except ValueError:
+            pass
+
 
 
