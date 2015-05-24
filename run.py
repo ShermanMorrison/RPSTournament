@@ -8,4 +8,4 @@ app = create_app(True)
 
 if __name__ == '__main__':
 
-    socketio.run(app, **{"heartbeat_interval": 5, "heartbeat_timeout": 10})
+    socketio.run(app, **{"heartbeat_interval": 1, "heartbeat_timeout": 10})

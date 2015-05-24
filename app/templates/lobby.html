@@ -12,15 +12,17 @@
     </form>
 
     <ul id="userNav">
-    {% for user in users %}
-        {% if user != name %}
-            <li><a href="#">{{user}}</a>
-                <ul>
-                    <li><a href="/game">Challenge</a></li>
-                    <li><a href="#">History</a></li>
-                </ul>
-            </li>
-        {% endif %}
+    {% for userList in users.values() %}
+        {% for user in userList %}
+            {% if user != name %}
+                <li><a href="#">{{user}}</a>
+                    <ul>
+                        <li><a href="/game">Challenge</a></li>
+                        <li><a href="#">History</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+        {% endfor %}
     {% endfor %}
     </ul>
 
