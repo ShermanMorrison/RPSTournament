@@ -83,7 +83,6 @@ def disconnect():
     if 'name' in session:
         # emit leave message to all clients
         try:
-            users.remove(session['name'])
             # users[session['uuid']].pop(0)
             socketio.emit('left', {'sender': session['name']}, namespace='/game')
         except ValueError:

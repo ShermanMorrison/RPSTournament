@@ -4,7 +4,6 @@
     <script type="text/javascript" charset="utf-8">
         var name = "{{name}}";
     </script>
-    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/game.js')}}"></script>
 
     <h2>Game</h2>
     <button type="button" onclick="rock()">Rock</button>
@@ -31,6 +30,10 @@
     <img src="/static/img/rock.png" id="rockImgOpp" style="display:none;width:128px;height:128px">
     <img src="/static/img/paper.png" id="paperImgOpp" style="display:none;width:128px;height:128px">
     <img src="/static/img/scissors.png" id="scissorsImgOpp" style="display:none;width:128px;height:128px">
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/connect.js')}}"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/game.js')}}"></script>
 
     <canvas class= "canvas" id="canvas" style="position:relative"></canvas>
 
