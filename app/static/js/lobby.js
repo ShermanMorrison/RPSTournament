@@ -23,8 +23,14 @@ $(document).ready(function(){
             });
             socket.on('challengeResponse', function(data) {
                 console.log('Got an acceptedChallenge message: ' + data.challenger);
+                $.post('/lobby', {type: 'joinGame'});
+
+            });
+            socket.on('joinGame', function(data) {
+                console.log('Got an acceptedChallenge message: ' + data.challenger);
                 window.location.assign('/game');
             });
+
 
             var bindUI = function(){
                 //menu hover
@@ -46,7 +52,6 @@ $(document).ready(function(){
                 accept = function(){
                     console.log("clicked accept");
                     $.post('/lobby', {type: 'challengeResponse', challenger: $('#challenger').text(), response: 'accept'});
-                    window.location.assign('/game');
                 }
             }
 
