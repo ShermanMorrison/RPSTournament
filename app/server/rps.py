@@ -3,10 +3,12 @@ __author__ = 'jonathan'
 from flask import render_template, request, redirect, url_for, session, flash
 from . import server
 from .. import socketio
+from flask.ext.socketio import join_room, leave_room
 from functools import wraps
 from uuid import uuid4
 
 users = {}
+rooms = []
 #routing
 @server.route('/', methods=['GET', 'POST'])
 def login():
@@ -16,6 +18,7 @@ def login():
 
         # make new username for this client
         session['name'] = request.form['username']
+        session['room'] = request.form['username']
 
         #make uuid for session
         session['uuid'] = str(uuid4())
@@ -36,13 +39,22 @@ def login_required(test):
     return wrap
 
 
-@server.route('/lobby')
+@server.route('/lobby', methods=['GET', 'POST'])
 @login_required
 def lobby():
-
+    if request.method == 'POST':
+        if request.form['type'] == 'challenge':
+            target = request.form['target']
+            socketio.emit('challengeRequest', {'target': target, 'sender': session['room']}, namespace='/game', room=target)
+            return "Sent challengeRequest"
+        elif request.form['type'] == 'challengeResponse':
+            #send accept message to target
+            socketio.emit('challengeResponse', {'response': request.form['response']}, namespace='/game', room=request.form['challenger'])
+            return "Sent accept"
 
     print "in lobby"
     name = session['name']
+    session['room'] = session['name']
     return render_template('lobby.html', name=name, users=users)
 
 
@@ -62,6 +74,9 @@ def game():
 @socketio.on('connect', namespace='/game')
 def connect():
     global users
+
+    join_room(session['room'])
+    # socketio.emit('challengeRequest', {'target': session['room'], 'sender': session['room']}, namespace='/game', room=session['room'])
     try:
         if session['uuid'] not in users:
             users[session['uuid']] = [session['name']]

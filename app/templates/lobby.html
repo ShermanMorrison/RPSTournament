@@ -1,6 +1,9 @@
 {% extends "template.html" %}
 {% block content %}
     {{name}}
+    <script type="text/javascript" charset="utf-8">
+        var name = "{{name}}";
+    </script>
 
     <h2>Lobby</h2>
 
@@ -11,14 +14,34 @@
         <input type="submit" value="View Current Games">
     </form>
 
+    <!-- Modal -->
+    <div class="modal fade" id="challengeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+          </div>
+          <div class="modal-body">
+              <span id="challenger">""</span> has challenged you to a match!
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Decline</button>
+            <button type="button" class="btn btn-primary" onclick="accept()">Accept</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <ul id="userNav">
     {% for userList in users.values() %}
         {% for user in userList %}
             {% if user != name %}
-                <li><a href="#">{{user}}</a>
+                <li>
+                    <span id="name">{{user}}</span>
                     <ul>
-                        <li><a href="/game">Challenge</a></li>
-                        <li><a href="#">History</a></li>
+                        <li class="listEntryChallenge">Challenge</li>
+                        <li>History</li>
                     </ul>
                 </li>
             {% endif %}
