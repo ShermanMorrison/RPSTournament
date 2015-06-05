@@ -1,0 +1,15 @@
+{% extends "_base.html" %}
+{% block content %}
+
+    <form action="" method="post">
+        Username: <input name="username" type="username" value="{{request.form.password}}">
+        <br>
+        Password: <input name="password" type="password" value="{{request.form.password}}">
+        <br>
+        Confirm Password: <input name="confirm" type="password" value="{{request.form.password}}">
+        <br>
+        <input type="submit" value="Sign In">
+    </form>
+
+    <p><em>Already registered?</em> Click <a href="/">here</a> to log in.</p>
+{% endblock %}

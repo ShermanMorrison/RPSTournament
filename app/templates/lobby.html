@@ -1,0 +1,36 @@
+{% extends "_base.html" %}
+{% block content %}
+    {{name}}
+    <script type="text/javascript" charset="utf-8">
+        var name = "{{name}}";
+    </script>
+
+    <h2>Lobby</h2>
+
+    <form class="viewLeaderBoard">
+        <input type="submit" value="View Leaderboard">
+    </form>
+    <form class="viewCurrentGames">
+        <input type="submit" value="View Current Games">
+    </form>
+
+    <ul id="userNav">
+    {% for userList in users.values() %}
+        {% for user in userList %}
+            {% if user != name %}
+                <li>
+                    <span id="name">{{user}}</span>
+                    <ul>
+                        <li class="listEntryChallenge">Challenge</li>
+                        <li>History</li>
+                    </ul>
+                </li>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </ul>
+
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>-->
+    <!--<script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/connect.js')}}"></script>-->
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/lobby.js')}}"></script>
+{% endblock %}
