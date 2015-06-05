@@ -1,0 +1,15 @@
+X--Add css to make Lobby user list show/hide
+X--Get socket message working on connect
+
+--Put users in a game together
+Player A sends challenge over socket to Player B -> {3 child events}
+--> Player A gets a "Pending Challenge Request" Modal
+--> Player B gets a "Challenge Request" Modal
+1) Player A cancels the challenge request before Player B responds
+--> Modals disappear for both players
+2) Player B declines the challenge
+--> Modals disappear for both players
+3) Player B accepts the challenge
+-->Both players get inGame cookies, and in joinGame handler they
+redirect themselves to the Game page
+

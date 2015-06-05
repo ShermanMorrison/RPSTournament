@@ -1,0 +1,10 @@
+Goal: Remove user_id from users upon leaving lobby
+
+onbeforeunload: Doesn't work if user decides to stay on page,
+because it removes him on the post request without unloading
+
+onunload: Doesn't work because get request happens before post request.
+This can be fixed by adding a duplicate, briefly.
+
+Refreshes page: Get adds him, post removes him. Net change = 0
+Really leaves page: Post removes him. Net change = -1

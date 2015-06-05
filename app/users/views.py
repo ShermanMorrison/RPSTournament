@@ -6,11 +6,12 @@ __author__ = 'jonathan'
 
 from flask import render_template, request, redirect, url_for, \
 session, flash, Blueprint
-from uuid import uuid4
 from functools import wraps
 from sqlalchemy.exc import IntegrityError
 
 from app import db
+from app import socketio
+from flask.ext.socketio import join_room, leave_room
 from app.models import User
 
 ##############
@@ -111,7 +112,6 @@ def lobby():
     else:
         print('get to lobby')
         name = session['name']
-        session['room'] = session['name']
         if session['user_id'] not in users:
             users[session['user_id']] = [session['name']]
         else:
@@ -119,7 +119,30 @@ def lobby():
         return render_template('lobby.html', name=name, users=users)
 
 
+@socketio.on('connect', namespace='/game')
+def connect():
+    global users
+    print "User connected!"
+    join_room(session['name'])
+    try:
+        if session['user_id'] not in users:
+            users[session['user_id']] = [session['name']]
+        else:
+            users[session['user_id']].append(session['name'])
+        socketio.emit('joined', {'sender': session['name']}, namespace='/game')
+    except ValueError:
+        pass
 
+@socketio.on('disconnect', namespace='/game')
+def disconnect():
+    global users
+    if 'name' in session:
+        # emit leave message to all clients
+        try:
+            users[session['user_id']].pop(0)
+            socketio.emit('left', {'sender': session['name']}, namespace='/game')
+        except ValueError:
+            pass
 
 
 
