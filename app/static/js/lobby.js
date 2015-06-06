@@ -1,4 +1,4 @@
-var accept;
+var accept, decline, cancel;
 $(document).ready(function(){
     window.onunload = exitLobby;
 
@@ -26,7 +26,7 @@ $(document).ready(function(){
         );
         $('.listEntryChallenge').on("click", function(event){
 
-            $("#challengee").text($(".user").text());
+            $("#challengee").text($(event.target).parents('#userEntry').find('.user').text());
             $("#pendingModal").modal("show");
 
             var send_to = $(event.target).parents('#userEntry').find('.user').text();
@@ -38,7 +38,13 @@ $(document).ready(function(){
     var ready = function(){
         bindUI();
         accept = function(){
-            $.post('/lobby', {type: 'challengeResponse', challenger: $('#challenger').text(), response: 'accept'});
+            $.post('/lobby', {type: 'challengeAccept', challenger: $('#challenger').text()});
+        }
+        decline = function(){
+            $.post('/lobby', {type: 'challengeDecline', challenger: $('#challenger').text()});
+        }
+        cancel = function(){
+            $.post('/lobby', {type: 'challengeCancel', challengee: $('#challengee').text()});
         }
     }
 

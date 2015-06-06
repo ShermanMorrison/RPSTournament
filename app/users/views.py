@@ -115,19 +115,28 @@ def lobby():
             target = request.form['target']
             socketio.emit('challengeRequest', {'target': target, 'sender': session['name']}, namespace='/game', room=target)
             return render_template('lobby.html', name=name, users=users, target=target)
-        elif request.form['type'] == 'challengeResponse':
+        elif request.form['type'] == 'challengeAccept':
             challenger = request.form['challenger']
             challengee = session['name']
             games[challenger] = {'challenger': -1, 'challengee': -1}
-            socketio.emit('challengeResponse', {'response': request.form['response'],
-                                                'challenger': challenger,
-                                                'challengee': challengee},
+            socketio.emit('challengeAccept', {'challenger': challenger,
+                                              'challengee': challengee},
                           namespace='/game', room=challenger)
-            socketio.emit('challengeResponse', {'response': request.form['response'],
-                                                'challenger': challenger,
-                                                'challengee': challengee},
+            socketio.emit('challengeAccept', {'challenger': challenger,
+                                              'challengee': challengee},
                           namespace='/game', room=challengee)
             return "Sent challengeResponse's"
+        elif request.form['type'] == 'challengeDecline':
+
+            challenger = request.form['challenger']
+            print "declining challenge from " + str(challenger)
+            socketio.emit('challengeDecline', {}, namespace='/game', room=challenger)
+            return "Declined  challenge from " + str(challenger)
+        elif request.form['type'] == 'challengeCancel':
+            challengee = request.form['challengee']
+            print "cancelling challenge to " + str(challengee)
+            socketio.emit('challengeCancel', {}, namespace='/game', room=challengee)
+            return "cancelled challenge to " + str(challengee)
         elif request.form['type'] == 'joinGame':
             session['challenger'] = request.form['challenger']
             session['challengee'] = request.form['challengee']

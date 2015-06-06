@@ -10,6 +10,6 @@ X--> Player B gets a "Challenge Request" Modal
 2) Player B declines the challenge
 --> Modals disappear for both players
 3) Player B accepts the challenge
--->Both players get inGame cookies, and in joinGame handler they
+X-->Both players get inGame cookies, and in joinGame handler they
 redirect themselves to the Game page
 
