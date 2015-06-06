@@ -102,40 +102,98 @@ def register():
 @login_required
 def lobby():
     if request.method == 'POST':
-        if len(users[session['user_id']]) == 1:
-            users.pop(session['user_id'], None)
-        else:
-            users[session['user_id']].remove(session['name'])
         name = session['name']
-        print('post to lobby')
-        return render_template('lobby.html', name=name, users=users)
+        if request.form['type'] == 'leaveLobby':
+            print "Leaving lobby: Removing user!"
+            if len(users[session['user_id']]) == 1:
+                users.pop(session['user_id'], None)
+            else:
+                users[session['user_id']].remove(session['name'])
+            print('post to lobby')
+            return render_template('lobby.html', name=name, users=users)
+        elif request.form['type'] == 'challenge':
+            target = request.form['target']
+            socketio.emit('challengeRequest', {'target': target, 'sender': session['name']}, namespace='/game', room=target)
+            return render_template('lobby.html', name=name, users=users, target=target)
+        elif request.form['type'] == 'challengeResponse':
+            challenger = request.form['challenger']
+            challengee = session['name']
+            games[challenger] = {'challenger': -1, 'challengee': -1}
+            socketio.emit('challengeResponse', {'response': request.form['response'],
+                                                'challenger': challenger,
+                                                'challengee': challengee},
+                          namespace='/game', room=challenger)
+            socketio.emit('challengeResponse', {'response': request.form['response'],
+                                                'challenger': challenger,
+                                                'challengee': challengee},
+                          namespace='/game', room=challengee)
+            return "Sent challengeResponse's"
+        elif request.form['type'] == 'joinGame':
+            session['challenger'] = request.form['challenger']
+            session['challengee'] = request.form['challengee']
+            print session['challenger']
+            print session['challengee']
+            session['inGame'] = True
+            socketio.emit('joinGame', {}, namespace='/game', room=session['name'])
+            return "Sent joinGame"
     else:
-        print('get to lobby')
+        print('get to lobby: Adding user!')
         name = session['name']
         if session['user_id'] not in users:
             users[session['user_id']] = [session['name']]
         else:
             users[session['user_id']].append(session['name'])
+        print users[session['user_id']]
         return render_template('lobby.html', name=name, users=users)
 
+
+@users_blueprint.route('/game', methods=['GET', 'POST'])
+@inGame_required
+def game():
+    name = session['name']
+    print name
+
+    if request.method == 'POST':
+        move = request.form['data']
+        sender = request.form['sender']
+        print move
+        print sender
+        print session['challenger']
+        print games
+        print session['challenger'] in games
+        if sender == session['challenger']:
+            submitter = 'challenger'
+        else:
+            submitter = 'challengee'
+
+        if -2 == sum(move for move in games[session['challenger']].values() if move == -1):
+            games[session['challenger']][submitter] = move
+        else:
+            print "here!!"
+            print submitter
+            games[session['challenger']][submitter] = move
+            print games[session['challenger']]
+            print session['challenger']
+            print session['challengee']
+            socketio.emit('submittedMove', {'msg': games[session['challenger']]['challengee'], 'sender': session['challengee']}, namespace='/game', room=session['challenger'])
+            socketio.emit('submittedMove', {'msg': games[session['challenger']]['challenger'], 'sender': session['challenger']}, namespace='/game', room=session['challengee'])
+            games[session['challenger']] = {'challenger': -1, 'challengee': -1}
+        print "got post request for game submit move"
+        print games[session['challenger']]
+        return 'Received'
+
+    return render_template('game.html', name=name)
 
 @socketio.on('connect', namespace='/game')
 def connect():
     global users
     print "User connected!"
     join_room(session['name'])
-    try:
-        if session['user_id'] not in users:
-            users[session['user_id']] = [session['name']]
-        else:
-            users[session['user_id']].append(session['name'])
-        socketio.emit('joined', {'sender': session['name']}, namespace='/game')
-    except ValueError:
-        pass
 
 @socketio.on('disconnect', namespace='/game')
 def disconnect():
     global users
+    """
     if 'name' in session:
         # emit leave message to all clients
         try:
@@ -143,7 +201,7 @@ def disconnect():
             socketio.emit('left', {'sender': session['name']}, namespace='/game')
         except ValueError:
             pass
-
+    """
 
 
 

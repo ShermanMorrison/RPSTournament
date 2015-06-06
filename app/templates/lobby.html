@@ -18,8 +18,8 @@
     {% for userList in users.values() %}
         {% for user in userList %}
             {% if user != name %}
-                <li>
-                    <span id="name">{{user}}</span>
+                <li id="userEntry">
+                    <span class="user">{{user}}</span>
                     <ul>
                         <li class="listEntryChallenge">Challenge</li>
                         <li>History</li>
@@ -39,7 +39,7 @@
             <h4 class="modal-title" id="pendingModelLabel">Modal title</h4>
           </div>
           <div class="modal-body">
-              Pending <span id="challengee">""</span> 's response.
+              Pending <span id="challengee">"{{target}}"</span> 's response.
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
@@ -68,6 +68,6 @@
     </div>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
-    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/socket_call_backs.js')}}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/lobby.js')}}"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/socket_call_backs.js')}}"></script>
 {% endblock %}

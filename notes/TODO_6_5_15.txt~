@@ -1,4 +1,5 @@
 X--Add css to make Lobby user list show/hide
+X--Get socket message working on connect
 
 --Put users in a game together
 Player A sends challenge over socket to Player B -> {3 child events}

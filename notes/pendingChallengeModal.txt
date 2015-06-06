@@ -1,0 +1,2 @@
+Goal: Send Challenge, Get Pending Challenge Modal, Cancel -> target
+is still present, and css (hover) works 

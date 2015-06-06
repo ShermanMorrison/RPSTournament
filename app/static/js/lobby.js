@@ -1,3 +1,4 @@
+var accept;
 $(document).ready(function(){
     window.onunload = exitLobby;
 
@@ -23,11 +24,24 @@ $(document).ready(function(){
                 $('ul', this).slideUp("fast");
             }
         );
-        $('.listEntryChallenge').on("click", function(){
-            $.post("/lobby", {type: 'challenge', target: $("#name").text(), sender: name});
+        $('.listEntryChallenge').on("click", function(event){
+
+            $("#challengee").text($(".user").text());
+            $("#pendingModal").modal("show");
+
+            var send_to = $(event.target).parents('#userEntry').find('.user').text();
+            $.post('/lobby', {type: 'challenge', target: send_to, sender: name});
+
         })
     };
 
-    bindUI();
+    var ready = function(){
+        bindUI();
+        accept = function(){
+            $.post('/lobby', {type: 'challengeResponse', challenger: $('#challenger').text(), response: 'accept'});
+        }
+    }
+
+    ready();
 });
 
