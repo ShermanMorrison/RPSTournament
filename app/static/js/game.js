@@ -1,4 +1,4 @@
-var images, hideOthers, changeMove, rock, paper, scissors, submit;
+var images, hideOthers, changeMove, rock, paper, scissors, submit, returnToLobby;
 var move = -1;
 
 $(document).ready(function(){
@@ -37,7 +37,7 @@ $(document).ready(function(){
         if (move >= 0 && move < 3){
             hideOthers(move);
             $(images[move]).toggle();
-            $.post("/game", {data: move, sender: name});
+            $.post("/game/" + game_id, {data: move, sender: name});
             console.log("Sent post to submit move");
         }
         else{
@@ -47,6 +47,9 @@ $(document).ready(function(){
 
     };
 
+    returnToLobby = function(){
+
+    }
 
     // socket handlers
     socket.on('submittedMove', function(data) {
@@ -55,6 +58,6 @@ $(document).ready(function(){
             hideOthersOpp(images[data.msg]);
             $(images[data.msg] + "Opp").toggle();
         }
-
+        window.location.assign('/lobby');
     });
 });

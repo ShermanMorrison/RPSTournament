@@ -1,0 +1,53 @@
+A and B both have session['inGame'] == true
+
+After submitting moves, A and B both get submittedMove messages
+This disables the Submit button.
+
+<Had considered session.pop('inGame',None) after both submit>
+<This ended up causing redirects to lobby upon further submit posts,
+which added duplicate users to the lobby>
+
+
+A clicks "Return to Lobby" and sends a post request
+
+A gets a returnToLobby message and is directed back to lobby.
+
+
+
+
+__Situation__
+
+A challenges B to Game
+
+B clicks accept
+
+Both A and B post joinGame messages
+
+
+__Implementation__
+
+Each client secure session has a set of games he is in, session['games']
+
+When A posts a joinGame request, the server puts (gameID, role) into his session['games']
+Server then sends A the joinGame message with the gameID.
+
+A then calls window.location.assign(/game/gameID)
+
+
+Right now:
+-Both users post submit move
+-Users relocate to /lobby from submittedMove handler
+
+
+Want users to click return-To-Lobby button to go back to lobby
+
+Want to disallow further submit posts from this game's users
+Want submittedMove handler 
+
+
+
+
+
+
+
+

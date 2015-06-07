@@ -5,7 +5,7 @@ __author__ = 'jonathan'
 #############
 
 from flask import render_template, request, redirect, url_for, \
-session, flash, Blueprint
+    session, flash, Blueprint
 from functools import wraps
 from sqlalchemy.exc import IntegrityError
 
@@ -43,7 +43,10 @@ def login_required(test):
 def inGame_required(test):
     @wraps(test)
     def wrap(*args, **kwargs):
-        if 'inGame' in session:
+        game_id = kwargs['game_id']
+        print game_id
+        print session
+        if game_id in session:
             return test(*args, **kwargs)
         else:
             flash('You must be in a game to view this page')
@@ -138,12 +141,29 @@ def lobby():
             socketio.emit('challengeCancel', {}, namespace='/game', room=challengee)
             return "cancelled challenge to " + str(challengee)
         elif request.form['type'] == 'joinGame':
+            challenger = request.form['challenger']
+            challengee = request.form['challengee']
             session['challenger'] = request.form['challenger']
             session['challengee'] = request.form['challengee']
             print session['challenger']
             print session['challengee']
             session['inGame'] = True
-            socketio.emit('joinGame', {}, namespace='/game', room=session['name'])
+
+            print "HERE"
+            if session['name'] == challenger:
+                role = 'challenger'
+            else:
+                role = 'challengee'
+
+            print "WOOO HEREEE"
+            game_id = challenger + "/" + challengee
+            print "WOOOW COWBOY!"
+            print game_id
+            print role
+            session[str(game_id)] = role
+
+            print "GOOOOAALLL HEREEE"
+            socketio.emit('joinGame', {'game_id': game_id}, namespace='/game', room=session['name'])
             return "Sent joinGame"
     else:
         print('get to lobby: Adding user!')
@@ -156,11 +176,12 @@ def lobby():
         return render_template('lobby.html', name=name, users=users)
 
 
-@users_blueprint.route('/game', methods=['GET', 'POST'])
+@users_blueprint.route('/game/<path:game_id>', methods=['GET', 'POST'])
 @inGame_required
-def game():
+def game(game_id):
     name = session['name']
     print name
+    # session.pop('inGame', None)
 
     if request.method == 'POST':
         move = request.form['data']
@@ -191,7 +212,7 @@ def game():
         print games[session['challenger']]
         return 'Received'
 
-    return render_template('game.html', name=name)
+    return render_template('game.html', name=name, game_id=game_id)
 
 @socketio.on('connect', namespace='/game')
 def connect():

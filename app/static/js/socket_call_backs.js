@@ -21,10 +21,7 @@ $(document).ready(function(){
         $("#challengeModal").modal("hide");
     });
     socket.on('joinGame', function(data) {
-        if (data['sender'] == name){
-
-        }
-        window.location.assign('/game');
+        window.location.assign('/game/' + data['game_id']);
     });
 });
 

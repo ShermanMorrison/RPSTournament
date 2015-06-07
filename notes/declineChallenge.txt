@@ -1,0 +1,7 @@
+A challenges B
+
+B clicks decline and his own dialogue goes away via jQuery
+
+Post request with type challengeDecline is sent to server
+
+Server emits challengeDecline to challenger
