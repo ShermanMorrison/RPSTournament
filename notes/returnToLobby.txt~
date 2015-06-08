@@ -34,15 +34,15 @@ Server then sends A the joinGame message with the gameID.
 A then calls window.location.assign(/game/gameID)
 
 
-
-Choice:
-
-
-
+Right now:
+-Both users post submit move
+-Users relocate to /lobby from submittedMove handler
 
 
+Want users to click return-To-Lobby button to go back to lobby
 
-
+Want to disallow further submit posts from this game's users
+Want submittedMove handler 
 
 
 

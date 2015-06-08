@@ -12,7 +12,7 @@ $(document).ready(function(){
         $("#challengeModal").modal("show");
     });
     socket.on('challengeAccept', function(data) {
-        $.post('/lobby', {type: 'joinGame', challenger: data['challenger'], challengee: data['challengee']});
+        $.post('/lobby', {type: 'joinGame', game_id: data['game_id'], id: data['id']});
     });
     socket.on('challengeDecline', function(data){
         $("#pendingModal").modal("hide");

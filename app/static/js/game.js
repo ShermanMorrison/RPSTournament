@@ -37,7 +37,7 @@ $(document).ready(function(){
         if (move >= 0 && move < 3){
             hideOthers(move);
             $(images[move]).toggle();
-            $.post("/game/" + game_id, {data: move, sender: name});
+            $.post("/game/" + game_id, {data: move, sender_id: id});
             console.log("Sent post to submit move");
         }
         else{
@@ -48,16 +48,13 @@ $(document).ready(function(){
     };
 
     returnToLobby = function(){
-
+        window.location.assign('/lobby');
     }
 
     // socket handlers
     socket.on('submittedMove', function(data) {
         console.log('Got a submittedMove message: ' + data.msg );
-        if (data.msg && data.sender != name){
-            hideOthersOpp(images[data.msg]);
-            $(images[data.msg] + "Opp").toggle();
-        }
-        window.location.assign('/lobby');
+        hideOthersOpp(images[data.msg]);
+        $(images[data.msg] + "Opp").toggle();
     });
 });

@@ -45,6 +45,10 @@ Want to disallow further submit posts from this game's users
 Want submittedMove handler 
 
 
+Idea:
+
+clients store the crytographic gameID, as well as
+crytographic key to their role.
 
 
 

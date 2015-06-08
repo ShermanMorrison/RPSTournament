@@ -8,6 +8,7 @@ from flask import render_template, request, redirect, url_for, \
     session, flash, Blueprint
 from functools import wraps
 from sqlalchemy.exc import IntegrityError
+from uuid import uuid4
 
 from app import db
 from app import socketio
@@ -112,7 +113,6 @@ def lobby():
                 users.pop(session['user_id'], None)
             else:
                 users[session['user_id']].remove(session['name'])
-            print('post to lobby')
             return render_template('lobby.html', name=name, users=users)
         elif request.form['type'] == 'challenge':
             target = request.form['target']
@@ -121,16 +121,18 @@ def lobby():
         elif request.form['type'] == 'challengeAccept':
             challenger = request.form['challenger']
             challengee = session['name']
-            games[challenger] = {'challenger': -1, 'challengee': -1}
-            socketio.emit('challengeAccept', {'challenger': challenger,
-                                              'challengee': challengee},
+            game_id = str(uuid4())
+            challenger_id = str(uuid4())
+            challengee_id = str(uuid4())
+            games[game_id] = {challenger_id: {'move': -1, 'opp_id': challengee}, challengee_id: {'move': -1, 'opp_id': challenger}}
+            socketio.emit('challengeAccept', {'game_id': game_id,
+                                              'id': challenger_id},
                           namespace='/game', room=challenger)
-            socketio.emit('challengeAccept', {'challenger': challenger,
-                                              'challengee': challengee},
+            socketio.emit('challengeAccept', {'game_id': game_id,
+                                              'id': challengee_id},
                           namespace='/game', room=challengee)
             return "Sent challengeResponse's"
         elif request.form['type'] == 'challengeDecline':
-
             challenger = request.form['challenger']
             print "declining challenge from " + str(challenger)
             socketio.emit('challengeDecline', {}, namespace='/game', room=challenger)
@@ -141,32 +143,12 @@ def lobby():
             socketio.emit('challengeCancel', {}, namespace='/game', room=challengee)
             return "cancelled challenge to " + str(challengee)
         elif request.form['type'] == 'joinGame':
-            challenger = request.form['challenger']
-            challengee = request.form['challengee']
-            session['challenger'] = request.form['challenger']
-            session['challengee'] = request.form['challengee']
-            print session['challenger']
-            print session['challengee']
-            session['inGame'] = True
-
-            print "HERE"
-            if session['name'] == challenger:
-                role = 'challenger'
-            else:
-                role = 'challengee'
-
-            print "WOOO HEREEE"
-            game_id = challenger + "/" + challengee
-            print "WOOOW COWBOY!"
-            print game_id
-            print role
-            session[str(game_id)] = role
-
-            print "GOOOOAALLL HEREEE"
+            game_id = request.form['game_id']
+            id = request.form['id']
+            session[game_id] = id
             socketio.emit('joinGame', {'game_id': game_id}, namespace='/game', room=session['name'])
             return "Sent joinGame"
     else:
-        print('get to lobby: Adding user!')
         name = session['name']
         if session['user_id'] not in users:
             users[session['user_id']] = [session['name']]
@@ -181,38 +163,28 @@ def lobby():
 def game(game_id):
     name = session['name']
     print name
-    # session.pop('inGame', None)
 
     if request.method == 'POST':
         move = request.form['data']
-        sender = request.form['sender']
-        print move
-        print sender
-        print session['challenger']
-        print games
-        print session['challenger'] in games
-        if sender == session['challenger']:
-            submitter = 'challenger'
-        else:
-            submitter = 'challengee'
+        sender_id = request.form['sender_id']
+        if game_id not in games:
+            return ""
+        if sender_id not in games[game_id].keys():
+            return ""
 
-        if -2 == sum(move for move in games[session['challenger']].values() if move == -1):
-            games[session['challenger']][submitter] = move
+        if -2 == sum(player['move'] for player in games[game_id].values() if player['move'] == -1):
+            games[game_id][sender_id]['move'] = move
         else:
-            print "here!!"
-            print submitter
-            games[session['challenger']][submitter] = move
-            print games[session['challenger']]
-            print session['challenger']
-            print session['challengee']
-            socketio.emit('submittedMove', {'msg': games[session['challenger']]['challengee'], 'sender': session['challengee']}, namespace='/game', room=session['challenger'])
-            socketio.emit('submittedMove', {'msg': games[session['challenger']]['challenger'], 'sender': session['challenger']}, namespace='/game', room=session['challengee'])
-            games[session['challenger']] = {'challenger': -1, 'challengee': -1}
-        print "got post request for game submit move"
-        print games[session['challenger']]
+            games[game_id][sender_id]['move'] = move
+            for player in games[game_id].values():
+                socketio.emit('submittedMove', {'msg': player['move']}, namespace='/game', room=player['opp_id'])
+
+            games.pop(game_id, None)
+
+        print games[game_id][sender_id]
         return 'Received'
 
-    return render_template('game.html', name=name, game_id=game_id)
+    return render_template('game.html', name=name, game_id=game_id, id=session[game_id])
 
 @socketio.on('connect', namespace='/game')
 def connect():
