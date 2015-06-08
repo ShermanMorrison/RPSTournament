@@ -56,5 +56,6 @@ $(document).ready(function(){
         console.log('Got a submittedMove message: ' + data.msg );
         hideOthersOpp(images[data.msg]);
         $(images[data.msg] + "Opp").toggle();
+        $("#submitBtn").prop("disabled", true);
     });
 });

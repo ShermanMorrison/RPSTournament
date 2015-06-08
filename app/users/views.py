@@ -45,9 +45,8 @@ def inGame_required(test):
     @wraps(test)
     def wrap(*args, **kwargs):
         game_id = kwargs['game_id']
-        print game_id
-        print session
-        if game_id in session:
+        # game must exist, and this player must have access to this game
+        if game_id in games and game_id in session:
             return test(*args, **kwargs)
         else:
             flash('You must be in a game to view this page')
